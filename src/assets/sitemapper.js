@@ -46,6 +46,7 @@ export default class Sitemapper {
     this.retries = settings.retries || 0;
     this.rejectUnauthorized =
       settings.rejectUnauthorized === false ? false : true;
+    this.languageOptions = settings.languageOptions || {};
   }
 
   /**
@@ -315,7 +316,25 @@ export default class Sitemapper {
 
             return modified >= this.lastmod;
           })
-          .map((site) => site.loc && site.loc[0]);
+          .map((site) => {
+            let loc;
+
+            if (site.loc && site.loc[0]) {
+              loc = site.loc[0];
+            }
+
+            // if multilingual, replace the loc with available hreflang
+            if (this.languageOptions.isMultilingual && site["xhtml:link"]) {
+              site["xhtml:link"].forEach((link) => {
+                const hreflang = link.$.hreflang;
+                const href = link.$.href;
+                if (hreflang === this.languageOptions.hreflang) {
+                  loc = href;
+                }
+              });
+            }
+            return loc;
+          });
         return {
           sites,
           errors: [],

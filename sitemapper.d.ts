@@ -10,6 +10,11 @@ export interface SitemapperErrorData {
   retries: number;
 }
 
+export interface LanguageOptions {
+  isMultilingual: boolean;
+  hreflang: string;
+}
+
 export interface SitemapperOptions {
   concurrency?: number;
   debug?: boolean;
@@ -19,6 +24,7 @@ export interface SitemapperOptions {
   retries?: number;
   timeout?: number;
   url?: string;
+  languageOptions?: LanguageOptions;
 }
 
 declare class Sitemapper {
